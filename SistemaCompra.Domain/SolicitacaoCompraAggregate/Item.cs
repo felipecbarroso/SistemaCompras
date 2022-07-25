@@ -1,8 +1,6 @@
 ﻿using SistemaCompra.Domain.Core.Model;
 using SistemaCompra.Domain.ProdutoAggregate;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SistemaCompra.Domain.SolicitacaoAggregate
 {
@@ -10,6 +8,7 @@ namespace SistemaCompra.Domain.SolicitacaoAggregate
     {
         public Produto Produto { get; set; }
         public int Qtde { get; set; }
+        public Guid SolicitacaoCompraId { get; set; }
 
         public Money Subtotal => ObterSubtotal();
 

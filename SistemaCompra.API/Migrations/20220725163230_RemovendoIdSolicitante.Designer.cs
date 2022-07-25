@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaCompra.Infra.Data;
 
 namespace SistemaCompra.API.Migrations
 {
     [DbContext(typeof(SistemaCompraContext))]
-    partial class SistemaCompraContextModelSnapshot : ModelSnapshot
+    [Migration("20220725163230_RemovendoIdSolicitante")]
+    partial class RemovendoIdSolicitante
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +56,7 @@ namespace SistemaCompra.API.Migrations
                     b.Property<int>("Qtde")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SolicitacaoCompraId")
+                    b.Property<Guid?>("SolicitacaoCompraId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -111,9 +113,7 @@ namespace SistemaCompra.API.Migrations
 
                     b.HasOne("SistemaCompra.Domain.SolicitacaoAggregate.SolicitacaoCompra", null)
                         .WithMany("Itens")
-                        .HasForeignKey("SolicitacaoCompraId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SolicitacaoCompraId");
                 });
 
             modelBuilder.Entity("SistemaCompra.Domain.SolicitacaoAggregate.SolicitacaoCompra", b =>

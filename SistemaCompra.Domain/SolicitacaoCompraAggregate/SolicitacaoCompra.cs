@@ -1,7 +1,6 @@
 ﻿using SistemaCompra.Domain.Core;
 using SistemaCompra.Domain.Core.Model;
 using SistemaCompra.Domain.ProdutoAggregate;
-using SistemaCompra.Domain.SolicitacaoAggregate.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,13 +19,25 @@ namespace SistemaCompra.Domain.SolicitacaoAggregate
 
         private SolicitacaoCompra() { }
 
-        public SolicitacaoCompra(string usuarioSolicitante, string nomeFornecedor)
+        public SolicitacaoCompra(string usuarioSolicitante, string nomeFornecedor, List<Item> itens)
         {
             Id = Guid.NewGuid();
             UsuarioSolicitante = new UsuarioSolicitante(usuarioSolicitante);
             NomeFornecedor = new NomeFornecedor(nomeFornecedor);
             Data = DateTime.Now;
             Situacao = Situacao.Solicitado;
+            Itens = itens;
+            TotalGeral = CalcularTotal(itens);
+            CondicaoPagamento = RegistrarCondicaoPagamento(TotalGeral.Value);
+
+        }
+
+        public void Atualizar(string nomeFornecedor, Situacao situacao, int condicaoPagamento)
+        {
+            NomeFornecedor = new NomeFornecedor(nomeFornecedor);
+            Situacao = situacao;
+            CondicaoPagamento = new CondicaoPagamento(condicaoPagamento);
+
         }
 
         public void AdicionarItem(Produto produto, int qtde)
@@ -34,16 +45,23 @@ namespace SistemaCompra.Domain.SolicitacaoAggregate
             Itens.Add(new Item(produto, qtde));
         }
 
-        public void RegistrarCompra(IEnumerable<Item> itens)
+        private static Money CalcularTotal(List<Item> itens)
         {
-           if(!(itens.Count() > 0))
-                throw new BusinessRuleException("Pelo menos um item deve ser registrado");
+            decimal valorTotal = 0;
+            foreach(var item in itens)
+            {
+                valorTotal += item.Subtotal.Value;
+            }
+
+            return new Money(valorTotal);
+
         }
 
-        public void RegistrarCondicaoPagamento()
+        public CondicaoPagamento RegistrarCondicaoPagamento(decimal valorTotal)
         {
-            if(TotalGeral.Value > 50000)
-                CondicaoPagamento = new CondicaoPagamento(1);
+            if (valorTotal > 50000)
+                return new CondicaoPagamento(30);
+            return new CondicaoPagamento(0);
         }
     }
 }

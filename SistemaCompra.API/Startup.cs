@@ -10,8 +10,11 @@ using Microsoft.OpenApi.Models;
 using SistemaCompra.Application.Produto;
 using SistemaCompra.Domain.ProdutoAggregate;
 using SistemaCompra.Domain.SolicitacaoAggregate;
+using SistemaCompra.Domain.SolicitacaoCompraAggregate;
 using SistemaCompra.Infra.Data;
+using SistemaCompra.Infra.Data.Item;
 using SistemaCompra.Infra.Data.Produto;
+using SistemaCompra.Infra.Data.SolicitacaoCompra;
 using SistemaCompra.Infra.Data.UoW;
 using System;
 
@@ -34,7 +37,9 @@ namespace SistemaCompra.API
             services.AddAutoMapper(assembly);
             services.AddSignalR();
 
+            services.AddScoped<ISolicitacaoCompraRepository, SolicitacaoCompraRepository>();
             services.AddScoped<IProdutoRepository, ProdutoRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddDbContext<SistemaCompraContext>(options =>
